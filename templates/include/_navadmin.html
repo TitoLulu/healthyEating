@@ -11,19 +11,14 @@
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li><a href="/">Admin</a></li>
-            <li><a href="/addproduct">Add Product</a></li>
-            <li><a href="/userdashboard">Edit User</a></li>
-            <li><a href="/plotheight">Statistics</a></li>
+              <li><a href="/addproduct">Add Product</a></li>
+              <li><a href="/userdashboard">Edit User</a></li>
+              <li><a href="/showStats">Statistics</a></li>
           </ul>
 
           <ul class="nav navbar-nav navbar-right">
-            {% if session.is_adminlogin %}
               <li><a href="/admindashboard">Dashboard</a></li>
-              <li><a href="/adminlogout">Login</a></li>
-            {% else %}
-              <li><a href="/admin">Logout</a></li>
-            {% endif %}
+              <li><a href="/adminlogout">Logout</a></li>
 
           </ul>
         </div><!--/.nav-collapse -->

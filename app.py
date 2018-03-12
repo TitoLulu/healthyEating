@@ -13,7 +13,6 @@ import math
 
 
 app=Flask(__name__)
-app.debug=True
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 UPLOAD_FOLDER = os.path.join(APP_ROOT, 'images')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -49,6 +48,7 @@ def post_user():
          db_session.add(user)
          db_session.commit()
          flash('Successfully Registered!')
+         return render_template('home.html')
     return render_template('post_user.html')
      
 
@@ -214,6 +214,7 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @app.route('/addproduct',methods=['GET','POST'])
+@is_adminlogin
 def addproduct():
      if not session.get('logged_in'):
         abort(401)
@@ -229,7 +230,7 @@ def addproduct():
      return render_template('addproduct.html')
 #admin delete user
 @app.route('/delete/<string:id>', methods=['GET','POST'])
-@is_loggedin
+@is_adminlogin
 def delete(id):
     user=User.query.filter_by(id=id).one()
     db_session.delete(user)
@@ -247,14 +248,10 @@ def dashbaord():
     return render_template('dashboard.html')
 
 @app.route('/showStats')
+@is_adminlogin
 def stats():
-    b=User.queary.all()
-    height= b.height
-    uheight=mean(uheight)
-    weight=b.weight
-    flash(uheight)
-
-    return render_template('shwostats.html')
+    b=User.query.all()
+    return render_template('showStats.html')
 
 
 
