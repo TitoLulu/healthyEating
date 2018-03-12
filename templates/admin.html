@@ -1,0 +1,20 @@
+{% extends 'layout.html' %}
+{% block body%}
+    <div class="row">
+        <div class="col-md-4 col-sm-4 col-sx-4"></div>
+        <div class="col-md-4 col-sm-4 col-sx-4">
+        <form action='/admin' method="POST">
+                <div class="form-group">
+                  <label for="email">Email:</label>
+                  <input type="email" class="form-control" id="email" name="email" >
+                </div>
+                <div class="form-group">
+                  <label for="pwd">Password:</label>
+                  <input type="text" class="form-control" id="pwd" name="pwd" >
+                </div>
+                <input type="submit" class="btn btn-primary" value="Submit">
+              </form>
+              </div>
+              <div class="col-md-4 col-sm-4 col-sx-4"></div>
+            </div>
+{% endblock %}

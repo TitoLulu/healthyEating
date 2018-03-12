@@ -1,0 +1,17 @@
+{% extends 'layout.html'%}
+
+{% block body%}
+{% for item in p %}
+<tr>
+    <td>{{item.uname}}</td>
+    <td>{{item.phoneNumber}}</td>
+    <td>{{item.email}}</td>
+    <td>{{item.pwd}}</td>
+    <td>{{item.height}}</td>
+    <td>{{item.weight}}</td>
+    
+</tr>
+{% endfor %}
+
+
+{% endblock%}

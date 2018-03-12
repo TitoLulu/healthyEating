@@ -1,0 +1,30 @@
+{% extends 'layout.html'%}
+
+{% block body%}
+	<h1>Dashboard <small>Welcome{{session.username}}</small></h1>
+	<table class="table table-striped">
+		<tr>
+			<th>User name</th>
+			<th>Phone Number</th>
+			<th>Email</th>
+			<th>Password</th>
+			<th>Date of Birth</th>
+			<th>Height</th>
+			<th>Weight</th>
+			<th>stored cash</th>
+			<th></th>
+		</tr>
+		<tr>
+			<td>{{user.uname}}</td>
+			<td>{{user.phoneNumber}}</td>
+			<td>{{user.email}}</td>
+			<td>{{user.pwd}}</td>
+			<td>{{user.dateofBirth}}</td>
+			<td>{{user.height}}</td>
+			<td>{{user.weight}}</td>
+			<td>{{user.storedCash}}</td>
+			<td><a href="/changeprofdtls/{{user.id}}" class="btn btn-success">Edit</a></td>
+		</tr>
+	</table>
+
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends 'adminlayout.html'%}
+
+{% block body %}
+
+    <div class="row">
+        <div class="col-md-4 col-sm-4 col-sx-4"></div>
+        <div class="col-md-4 col-sm-4 col-sx-4">
+        <form action='/addproduct' method="POST" enctype= "multipart/form-data">
+               <div class="form-group">
+                  <label for="pname">Product Name:</label>
+                  <input type="text" class="form-control" id="pname" name="pname" >
+                </div>
+                <div class="form-group">
+                  <label for="pimage">Image:</label>
+                  <input type="file" class="form-control" id="pimage" name="pimage" >
+                </div>
+                <div class="form-group">
+                  <label for="cost">Cost:</label>
+                  <input type="Integer" class="form-control" id="cost" name="cost" >
+                </div>
+                <input type="submit" class="btn btn-primary" value="Submit">
+              </form>
+              </div>
+        <div class="col-md-4 col-sm-4 col-sx-4"></div>
+    </div>
+
+
+{% endblock %}

@@ -1,0 +1,49 @@
+
+{% extends 'layout.html' %}
+
+{% block body %}
+        <div class="row">
+        <div class="col-md-4 col-sm-4 col-sx-4"></div>
+        <div class="col-md-4 col-sm-4 col-sx-4">
+        <form action="/changeprofdtls/{{user.id}}" method="POST">
+                <div class="form-group">
+                        <label for="uname">Name:</label>
+                        <input type="text" class="form-control" id="uname" name="uname" value="{{user.uname}}" >
+                </div>
+                <div class="form-group">
+                        <label for="phoneNumber">Phone Number:</label>
+                        <input type="tel" class="form-control" id="phoneNumber" 
+                        name="phoneNumber" value="{{user.phoneNumber}}" >
+                </div>
+                <div class="form-group">
+                  <label for="email">Email:</label>
+                  <input type="email" class="form-control" id="email" name="email" value="{{user.email}}">
+                </div>
+                <div class="form-group">
+                  <label for="pwd">Password:</label>
+                  <input type="text" class="form-control" id="pwd" name="pwd" value="{{user.pwd}}">
+                </div>
+                <div class="form-group">
+                        <label for="dateofBirth">Date of birth</label>:</label>
+                        <input type="date" class="form-control" id="dateofBirth" name="dateofBirth" value="{{user.dateofBirth}}">
+                </div>
+                <div class="form-group">
+                        <label for="height">Height:</label>
+                        <input type="integer" class="form-control" id="height" name="height" value="{{user.height}}">
+                </div>
+                <div class="form-group">
+                        <label for="weight">Weight:</label>
+                        <input type="integer" class="form-control" id="weight" name="weight" value="{{user.weight}}">
+                </div>
+                <div class="form-group">
+                        <label for="storedCash">storedCash:</label>
+                        <input type="integer" class="form-control" id="storedCash"  name="storedCash" value="{{user.storedCash}}">
+                </div>
+                
+                <input type="submit" class="btn btn-primary" value="Submit">
+              </form>
+              </div>
+              <div class="col-md-4 col-sm-4 col-sx-4"></div>
+            </div>
+
+{% endblock %}
