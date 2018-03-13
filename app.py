@@ -6,21 +6,30 @@ from database import init_db
 from functools import wraps
 from werkzeug.utils import secure_filename
 import matplotlib.pyplot as plt
-import math
+import os, sys
 
 
 
-
-
-app=Flask(__name__)
-APP_ROOT = os.path.dirname(os.path.abspath(__file__))
-UPLOAD_FOLDER = os.path.join(APP_ROOT, 'images')
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+UPLOAD_FOLDER = r'C:/Users/ACER/Documents/healthyEating/images/'
 
 #filetypes allowed
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 
+app=Flask(__name__)
+
+'''
+APP_ROOT = os.path.dirname(os.path.abspath(__file__))
+UPLOAD_FOLDER = os.path.join(APP_ROOT, 'images')
+'''
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+
+
 app.secret_key="Cindy Bosibori"
+
+'''
+instantiate the database
+'''
 
 @app.before_request
 def instantiatedb():
@@ -31,16 +40,23 @@ def instantiatedb():
 def shutdown_session(exception=None):
     db_session.remove()
 
-
+'''
+direct user to login page
+'''
 @app.route('/')
 def index():
     return render_template('login.html')
     
-
+'''
+about the company
+'''
 @app.route('/about')
 def about():
     return render_template('about.html')
-
+'''
+registers new user and directs to login
+access to website for new user happens after login
+'''
 @app.route('/post_user',methods=['GET','POST'])
 def post_user():
     if request.method == 'POST':
@@ -52,7 +68,9 @@ def post_user():
     return render_template('post_user.html')
      
 
-
+'''
+login for registered users
+'''
 @app.route('/login',methods=['GET','POST'])
 def login():
     error=None
@@ -73,25 +91,27 @@ def login():
       
     return render_template('login.html')
 
-
+'''
+admin login
+'''
 @app.route('/admin',methods=['GET','POST'])
 def admin():
     error=None
     if request.method=='POST':
-        users=User.query.all()
         email=request.form['email']
         pwd=request.form['pwd']
 
-        for user in users:
-            if pwd not in user.pwd and email not in user.email:
-                flash('not valid admin')
-                return render_template('admin.html')
-
-            else:
-                username=user.uname
-                session['logged_in']=True
-                session['username']=username
-                return redirect(url_for('admindashboard'))
+        user=User.query.filter_by(email=email).one()
+        if user is None and user.pwd !=pwd:
+            flash('not valid admin')
+            return render_template('admin.html')
+    
+        else:
+            username=user.uname
+            session['logged_in']=True
+            session['username']=username
+            return redirect(url_for('admindashboard'))
+        
       
     return render_template('admin.html')
 
@@ -105,6 +125,7 @@ def is_loggedin(f):
         else:
             return redirect(url_for('login'))
     return wrap
+#check login status for admin
 def is_adminlogin(f):
     @wraps(f)
     def wrap(*args, **kwargs):
@@ -113,13 +134,13 @@ def is_adminlogin(f):
         else:
             return redirect(url_for('admin'))
     return wrap
-
+#user sessiom
 @app.route('/logout')
 @is_loggedin
 def logout():
     session.clear()
     return redirect(url_for('login'))
-
+#admin session
 @app.route('/adminlogout')
 @is_adminlogin
 def adminogout():
@@ -132,7 +153,7 @@ def adminogout():
 @is_adminlogin
 def admindashboard():
     return render_template('admindashboard.html')
-
+#returns list of all users
 @app.route('/userdashboard', methods=['GET', 'POST'])
 @is_adminlogin
 def userdashboard():
@@ -155,11 +176,11 @@ def edit_users(id):
         user.height=request.form['height']
         user.weight=request.form['weight']
         user.storedCash=request.form['storedCash']
-        #db_session.add(user)
         db_session.commit()
         return redirect(url_for('admindashboard'))
       
     return render_template('edit_users.html',  user=user)
+
 
 @app.route('/uedit/<string:uid>', methods=['GET','POST'])
 @is_loggedin
@@ -182,7 +203,6 @@ def edit_prof(id):
         user.height=request.form['height']
         user.weight=request.form['weight']
         user.storedCash=request.form['storedCash']
-        #db_session.add(user)
         db_session.commit()
         return redirect(url_for('login'))
       
@@ -194,20 +214,19 @@ def edit_prof(id):
 def send_result(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'],
                                filename)
-
+#displays images using their relative path
 @app.route('/productview')
 def gallery():
     error=None
-    image_names=os.listdir('./images')
-    #imagedetails=Product.query.all()
-    #dbimgname=imagedetails.productImage
-    #if not None and image_names in dbimage:
+    '''
+    image_names=os.listdir('./images')'''
+    image_names=Product.query.all()
+    for image in image_names:
+        print(image.productImage)
     return render_template('productview.html', image_names=image_names)
-    #else:
-        #error='image does not exist in our database'
 
 
-    ##return render_template('productview.html', prod=prod)
+   
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -220,13 +239,15 @@ def addproduct():
         abort(401)
      if request.method == 'POST':
          file = request.files['pimage']
-         #if file and allowed_file(file.filename):
-         filename = secure_filename(file.filename)
-         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-         #post=Product(request.form['pname'], filename,request.form['cost'])
-         #db_session.add(post)
-         #@db_session.commit()
-        #return redirect(url_for('addproduct', filename=filename))
+         if file and allowed_file(file.filename):
+             filename = secure_filename(file.filename)
+             dbpath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+             file.save(dbpath)
+             post=Product(request.form['pname'], dbpath,request.form['cost'])
+             db_session.add(post)
+             db_session.commit()
+             '''
+             return redirect(url_for('addproduct', filename=filename))'''
      return render_template('addproduct.html')
 #admin delete user
 @app.route('/delete/<string:id>', methods=['GET','POST'])

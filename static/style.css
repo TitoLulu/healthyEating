@@ -1,3 +1,7 @@
 /*body{
 	background:#ccffcc;
+}*/
+.imgoutline img {
+	border: 5px solid black;
+	outline-style: outset;
 }
