@@ -1,6 +1,6 @@
 import os
 from flask import Flask,session, flash, request, render_template, url_for, redirect,send_from_directory
-from models import User, Product
+from models import User, Product, Utrack
 from database import db_session
 from database import init_db
 from functools import wraps
@@ -10,17 +10,18 @@ import os, sys
 
 
 
-UPLOAD_FOLDER = r'C:/Users/ACER/Documents/healthyEating/images/'
+UPLOAD_FOLDER = r'images'
+
 
 #filetypes allowed
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 
 app=Flask(__name__)
 
-'''
-APP_ROOT = os.path.dirname(os.path.abspath(__file__))
-UPLOAD_FOLDER = os.path.join(APP_ROOT, 'images')
-'''
+
+#APP_ROOT = os.path.dirname(os.path.abspath(__file__))
+#UPLOAD_FOLDER = os.path.join(APP_ROOT, 'images')
+
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
@@ -110,6 +111,7 @@ def admin():
             username=user.uname
             session['logged_in']=True
             session['username']=username
+            flash('login successful')
             return redirect(url_for('admindashboard'))
         
       
@@ -190,11 +192,12 @@ def prof(uid):
 
 #user edits own profile-
 @app.route('/changeprofdtls/<string:id>',methods=['GET','POST'])
-@is_adminlogin
+@is_loggedin
 def edit_prof(id):
     user=User.query.filter_by(id=id).one()
     #
     if request.method=='POST':
+        '''
         user.uname= request.form['uname']
         user.phoneNumber=request.form['phoneNumber']
         user.email=request.form['email']
@@ -203,8 +206,13 @@ def edit_prof(id):
         user.height=request.form['height']
         user.weight=request.form['weight']
         user.storedCash=request.form['storedCash']
-        db_session.commit()
-        return redirect(url_for('login'))
+        '''
+        def totrack():
+            stats=Utrack(rquest.form['height'], request.form['weight'], request.form['dateofBirth'])
+            db_session.add(stats)
+            db_session.commit()
+            flash('update successful, login to access page')
+            return redirect(url_for('login'))
       
     return render_template('changeprofdtls.html',  user=user)
 
@@ -216,13 +224,16 @@ def send_result(filename):
                                filename)
 #displays images using their relative path
 @app.route('/productview')
+@is_loggedin
 def gallery():
     error=None
     '''
     image_names=os.listdir('./images')'''
     image_names=Product.query.all()
+    '''
     for image in image_names:
         print(image.productImage)
+        '''
     return render_template('productview.html', image_names=image_names)
 
 
@@ -246,6 +257,7 @@ def addproduct():
              post=Product(request.form['pname'], dbpath,request.form['cost'])
              db_session.add(post)
              db_session.commit()
+             flash('product added Successfully')
              '''
              return redirect(url_for('addproduct', filename=filename))'''
      return render_template('addproduct.html')
@@ -261,12 +273,11 @@ def delete(id):
 
 
 #fetch users
-@app.route('/dashboard')
-def dashbaord():
-    p=User.query.all()
-    print(p)
-
-    return render_template('dashboard.html')
+@app.route('/dashboard<string:id>')
+@is_loggedin
+def dashbaord(id):
+    userstats=User.query.filter_by(id=id).one()
+    return render_template('dashboard.html', userstats=userstats)
 
 @app.route('/showStats')
 @is_adminlogin

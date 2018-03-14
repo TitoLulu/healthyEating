@@ -1,6 +1,9 @@
-from sqlalchemy import Column, LargeBinary,Integer,BigInteger, String, DateTime, Numeric
-#from datetime import datetime
+from sqlalchemy import Column, LargeBinary,Integer,BigInteger, String, DateTime, Numeric, ForeignKey
+from datetime import datetime
 from database import Base
+from sqlalchemy.orm import relationship
+
+now=datetime.now()
 
 class User(Base):
     __tablename__ = 'users'
@@ -13,6 +16,9 @@ class User(Base):
     height = Column(Integer())
     weight = Column(Integer())
     storedCash=Column(Integer())
+    userid = relationship("Utrack", backref="users")
+
+    
     
 
     def __init__(self, uname=None, phoneNumber=None, email=None, pwd=None, dateofBirth=None, height=None, weight=None,storedCash=None):
@@ -27,6 +33,27 @@ class User(Base):
 
     def __repr__(self):
         return '<User %r>' % (self.uname)
+
+class Utrack(Base):
+    __tablename__='trackuser'
+    id=Column(Integer, primary_key=True)
+    uid=Column(Integer, ForeignKey('users.id'))
+    height=Column(Integer())
+    weight=Column(Integer())
+    datechanged=Column(DateTime())
+
+ 
+    
+
+    def init(self, height=None, wegth=None, datechanged=None):
+        self.uid=uid
+        self.height=height
+        self.weight=weight
+        self.datechanged=datechanged
+
+    def __repr__(self):
+        return'<Utrack %r>'%(self.uid)
+
 
 class Product(Base):
     __tablename__='products'
@@ -43,5 +70,5 @@ class Product(Base):
         
 
     def __repr__(self):
-        return '<User %r>' % (self.productname)
+        return '<Product %r>' % (self.productname)
 

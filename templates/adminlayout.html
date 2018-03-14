@@ -8,7 +8,17 @@
 	
 	{% include 'include/_navadmin.html' %}
 	<div class="container">
-		{% block body %}{% endblock %}
+		{% block body %}
+			{% with messages = get_flashed_messages() %}
+			  {% if messages %}
+			    <ul class=flashes>
+			    {% for message in messages %}
+			      <li>{{ message }}</li>
+			    {% endfor %}
+			    </ul>
+			  {% endif %}
+			{% endwith %}
+		{% endblock %}
 	</div>
 
 	    <!-- jQuery first, then Tether, then Bootstrap JS. -->
