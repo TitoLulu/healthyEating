@@ -23,6 +23,7 @@
             {% if session.logged_in %}
               <li><a href="/dashboard/{{session.id}}">User Statistics</a></li>
               <li><a href="/uedit/{{session.id}}">Edit Profile</a></li>
+              <li><a href="/trackuser/{{session.id}}">Track Progress</a></li>
               <li><a href="/logout">Logout</a></li>
             {% else %}
               <li><a href="/post_user">Register</a></li>

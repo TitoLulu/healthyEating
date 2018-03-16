@@ -5,8 +5,11 @@ from database import db_session
 from database import init_db
 from functools import wraps
 from werkzeug.utils import secure_filename
-import matplotlib.pyplot as plt
+import pygal
 import os, sys
+import numpy
+#style.use('fivethirtyeight')
+
 
 
 
@@ -61,13 +64,12 @@ access to website for new user happens after login
 @app.route('/post_user',methods=['GET','POST'])
 def post_user():
     if request.method == 'POST':
-         user=User(request.form['uname'], request.form['phoneNumber'], request.form['email'], request.form['pwd'], request.form['dateofBirth'], request.form['height'], request.form['weight'], request.form['storedCash'])
+         user=User(request.form['uname'], request.form['phoneNumber'], request.form['email'], request.form['pwd'],request.form['storedCash'])
          db_session.add(user)
          db_session.commit()
          flash('Successfully Registered!')
-         return render_template('home.html')
+         return render_template('login.html')
     return render_template('post_user.html')
-     
 
 '''
 login for registered users
@@ -149,6 +151,19 @@ def adminogout():
     session.clear()
     return redirect(url_for('admin'))
 
+@app.route('/trackuser/<string:id>', methods=['GET','POST'])
+@is_loggedin
+def hweight(id):
+    user=User.query.filter_by(id=id).one()
+    if request.method=='POST':
+        uhw=Utrack(uid=user.id, height=request.form['height'], weight=request.form['weight'], datechanged=request.form['date'])
+        db_session.add(uhw)
+        db_session.commit()
+        return redirect('logout')
+
+    return render_template('trackuser.html', user=user)
+
+
 
 #admin dashboard
 @app.route('/admindashboard')
@@ -195,8 +210,10 @@ def prof(uid):
 @is_loggedin
 def edit_prof(id):
     user=User.query.filter_by(id=id).one()
+    
     #
     if request.method=='POST':
+        
         '''
         user.uname= request.form['uname']
         user.phoneNumber=request.form['phoneNumber']
@@ -207,12 +224,13 @@ def edit_prof(id):
         user.weight=request.form['weight']
         user.storedCash=request.form['storedCash']
         '''
-        def totrack():
-            stats=Utrack(rquest.form['height'], request.form['weight'], request.form['dateofBirth'])
-            db_session.add(stats)
-            db_session.commit()
-            flash('update successful, login to access page')
-            return redirect(url_for('login'))
+    
+        #def totrack():
+        #stats=Utrack(rquest.form['height'], request.form['weight'], request.form['dateofBirth'])
+        #db_session.add(stats)
+        db_session.commit()
+        flash('update successful, login to access page')
+        return redirect(url_for('login'))
       
     return render_template('changeprofdtls.html',  user=user)
 
@@ -227,14 +245,19 @@ def send_result(filename):
 @is_loggedin
 def gallery():
     error=None
-    '''
-    image_names=os.listdir('./images')'''
+    
     image_names=Product.query.all()
-    '''
-    for image in image_names:
-        print(image.productImage)
-        '''
+  
     return render_template('productview.html', image_names=image_names)
+
+
+app.route('/singleProductView/<string:id>')
+@is_loggedin
+def foodImage(id):
+    #view for a single product
+    image_view=Product.query_by(id=id).one()
+
+    return rennder_template('singleProductView.html', image_view=image_view)
 
 
    
@@ -272,18 +295,54 @@ def delete(id):
     return  redirect(url_for('admindashboard'))
 
 
-#fetch users
-@app.route('/dashboard<string:id>')
+#heigth and weight graphs 
+@app.route('/dashboard/<string:id>')
 @is_loggedin
 def dashbaord(id):
-    userstats=User.query.filter_by(id=id).one()
-    return render_template('dashboard.html', userstats=userstats)
+ 
+    grph= User.query.filter_by(id=id).one()
+    u=Utrack.query.filter_by(uid=id).all()
+    print(u)
+
+    heights, weights, dates = [], [], []
+    
+    for ut in u:
+        heights.append(ut.height)
+        weights.append(ut.weight)
+        dates.append(ut.datechanged)
+
+    graph=pygal.Line()
+    graph.title='Change in height and weight over time'
+    graph.x_lables= dates
+    graph.add('Height over time', heights)
+    graph.add('Weight over time', weights)
+    graph_data=graph.render_data_uri()
+    
+    
+    return render_template('dashboard.html', graph_data=graph_data)
+
+
 
 @app.route('/showStats')
 @is_adminlogin
 def stats():
-    b=User.query.all()
-    return render_template('showStats.html')
+    b=Utrack.query.all()
+    heights, weights,dates=[],[],[]
+
+    for ahw in b:
+        dates.append(ahw.datechanged)
+        heights.append(ahw.height)
+        weights.append(ahw.weight)
+
+    graph=pygal.Line()
+    graph.title='Height and Weight'
+    graph.x_lables=map(str, dates) 
+    graph.add('Height over time', heights)
+    graph.add('Weight over time', weights)
+    graph_data=graph.render_data_uri()
+    
+
+    return render_template('showStats.html',graph_data=graph_data)
 
 
 

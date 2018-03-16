@@ -1,0 +1,15 @@
+{% extends 'layout.html'%}
+
+{% block body%}
+<div>
+
+ {% for image_view in image_view%}
+ 	<div cass="well">
+
+ 		<a href="{{image_view.productImage}}"></a>
+ 		
+ 	</div>
+
+ {% endfor%}
+ </div>
+{%endblock%}

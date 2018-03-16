@@ -13,10 +13,8 @@ class User(Base):
     email = Column(String(120), unique=True)
     pwd = Column(String(120) )
     dateofBirth = Column(String(120))
-    height = Column(Integer())
-    weight = Column(Integer())
     storedCash=Column(Integer())
-    userid = relationship("Utrack", backref="users")
+    usersid = relationship("Utrack",  backref="users")
 
     
     
@@ -37,19 +35,21 @@ class User(Base):
 class Utrack(Base):
     __tablename__='trackuser'
     id=Column(Integer, primary_key=True)
-    uid=Column(Integer, ForeignKey('users.id'))
+    uid=Column(Integer, ForeignKey("users.id"))
     height=Column(Integer())
     weight=Column(Integer())
-    datechanged=Column(DateTime())
-
- 
+    datechanged=Column(String())
+    #usern = relationship("User",  back_populates="trackusers")
     
 
-    def init(self, height=None, wegth=None, datechanged=None):
+    def init(self, height, wegth, datechanged=None):
         self.uid=uid
         self.height=height
         self.weight=weight
-        self.datechanged=datechanged
+        if datechanged is None:
+            self.datechanged=datetime.utcnow()
+        else:
+            self.datechanged=datechangeds
 
     def __repr__(self):
         return'<Utrack %r>'%(self.uid)

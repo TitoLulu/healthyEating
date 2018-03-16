@@ -1,76 +1,18 @@
 {% extends 'layout.html'%}
 
 {% block body%}
-<style>
-	#container {
-	min-width: 310px;
-	max-width: 800px;
-	height: 400px;
-	margin: 0 auto
+	<div class="container", align="left">
+		<embed type="image/svg+xml" src={{graph_data|safe}} 
+		style='max-width:1000px'/>
+		
 
-</style>
-}
+		
+	</div>
+	
 
-	<script src="https://code.highcharts.com/highcharts.js"></script>
-	<script src="https://code.highcharts.com/modules/series-label.js"></script>
-	<script src="https://code.highcharts.com/modules/exporting.js"></script>
 
-	<div id="container"></div>.
 
-	<script>
-		Highcharts.chart('container', {
 
-	    title: {
-	        text: 'Height with time'
-	    },
-
-	    subtitle: {
-	        text: 'Source: tito.com'
-	    },
-
-	    yAxis: {
-	        title: {
-	            text: 'Height'
-	        }
-	    },
-	    legend: {
-	        layout: 'vertical',
-	        align: 'right',
-	        verticalAlign: 'middle'
-	    },
-
-	    plotOptions: {
-	        series: {
-	            label: {
-	                connectorAllowed: false
-	            },
-	            pointStart: 2017
-	        }
-	    },
-
-	    series: [{
-	        name: 'Height',
-	        data: {{userstats.height}}
-	    }],
-
-	    responsive: {
-	        rules: [{
-	            condition: {
-	                maxWidth: 500
-	            },
-	            chartOptions: {
-	                legend: {
-	                    layout: 'horizontal',
-	                    align: 'center',
-	                    verticalAlign: 'bottom'
-	                }
-	            }
-	        }]
-	    }
-
-	});
-			
-	</script>
 
 
 
