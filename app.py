@@ -7,7 +7,7 @@ from functools import wraps
 from werkzeug.utils import secure_filename
 import pygal
 import os, sys
-import numpy
+import statistics
 #style.use('fivethirtyeight')
 
 
@@ -330,15 +330,15 @@ def stats():
     heights, weights,dates=[],[],[]
 
     for ahw in b:
-        dates.append(ahw.datechanged)
+        #dates.append(ahw.datechanged)
         heights.append(ahw.height)
         weights.append(ahw.weight)
 
-    graph=pygal.Line()
-    graph.title='Height and Weight'
-    graph.x_lables=map(str, dates) 
-    graph.add('Height over time', heights)
-    graph.add('Weight over time', weights)
+    graph=pygal.Bar()
+    graph.title='Mean Height and Weight'
+    graph.x_lables=map(str, '2018') 
+    graph.add('Mean Height', statistics.mean(heights))
+    graph.add('Mean Weight', statistics.mean(weights))
     graph_data=graph.render_data_uri()
     
 
