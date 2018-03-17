@@ -256,11 +256,9 @@ def foodImage(id):
 @app.route('/delivery/<string:id>', methods=['GET','POST'])
 @is_loggedin
 def delivery(id):
-    prod=Product.query.filter_by(id=session['id']).one()
-    print(prod.productname)
+    prod=Product.query.filter_by(id=session['id']).all()
    
-    user=User.query.filter_by(id=session['id']).one()
-    print(user.id)
+    user=User.query.filter_by(id=session['id']).all()
     select=request.form.get('delivery')
     
 
@@ -277,7 +275,7 @@ def delivery(id):
 @is_loggedin
 def esub(id):
     #directs user to edit subscription.
-    sub=Delivery.query.filter_by(did=session['id']).one()
+    sub=Delivery.query.filter_by(did=id).all()
 
     return render_template('editSubscription.html', sub=sub)
 
@@ -396,8 +394,13 @@ def allstats():
 
     return render_template('allStats.html',graph_data=graph_data)
 
+@app.route('/upcomingdeliveries')
+@is_adminlogin
+def updeliveries():
+    #check upcoming deliveries
+    alldeliveries=Delivery.query.all()
 
-
+    return render_template('upcomingdeliveries.html', alldeliveries=alldeliveries)
 
 
 

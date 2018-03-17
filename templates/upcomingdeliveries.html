@@ -1,0 +1,23 @@
+{% extends 'layout.html'%}
+
+{% block body %}
+	<h1> <small>Upcoming Deliveries </small></h1>
+	<hr>
+	<table class="table table-striped">
+		<tr>
+			<th>Product Name</th>
+			<th>Delivery Option</th>
+			<th>edit subscription</th>
+			<th></th>
+		</tr>
+		<tr>
+			<td>{{alldeliveries.prodnm}}</td>
+			<td>{{alldeliveries.deliveryOption}}</td>
+			<td><a href="" class="btn btn-success">Cancel</a></td>
+		</tr>
+	</table>
+
+
+
+
+{% endblock %}
