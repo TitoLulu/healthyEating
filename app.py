@@ -256,14 +256,21 @@ def foodImage(id):
 @app.route('/delivery/<string:id>', methods=['GET','POST'])
 @is_loggedin
 def delivery(id):
-    prod=Product.query.filter_by(id=id).all()
-    user=User.query.filter_by(id=id).all()
+    prod=Product.query.filter_by(id=session['id']).one()
+    print(prod.productname)
+   
+    user=User.query.filter_by(id=session['id']).one()
+    print(user.id)
+    select=request.form.get('delivery')
+    
+
     
     if request.method=='POST':
-        udelivery=Delivery(did=user.id, prodnm=prod.productname, deliveryOption=request.form.get['delivery'])
+        udelivery=Delivery(user.id, prod.productname, select)
         db_session.add(udelivery)
         db_session.commit()
-    render_template('delivery.html')
+
+    return render_template('delivery.html')
 
 
 

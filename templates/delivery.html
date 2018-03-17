@@ -1,10 +1,11 @@
 {% extends 'layout.html' %}
 
 {% block body %}
+
  		<form action='/delivery/{{session.id}}' method="POST">
 		    <div class="form-group">
-		      <label for="delivery" name="delivery">Select Delivery Option (select one):</label>
-		      <select class="form-control" id="delivery">
+		      <label for="delivery">Select Delivery Option (select one):</label>
+		      <select class="form-control" id="delivery" name="delivery">
 		        <option value="daily"><strong>Daily</strong></option>
 		        <option value="biweekly"><strong>Twice a Week</strong></option>
 		        <option value="weekly"><strong>Weekly</strong></option>
