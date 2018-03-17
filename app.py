@@ -273,9 +273,14 @@ def delivery(id):
     return render_template('delivery.html')
 
 
+@app.route('/editSubscription/<string:id>')
+@is_loggedin
+def esub(id):
+    #directs user to edit subscription.
+    sub=Delivery.query.filter_by(id=session['id']).one()
 
+    return render_template('editSubscription.html', sub=sub)
 
-   
 
 def allowed_file(filename):
     return '.' in filename and \
