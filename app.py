@@ -1,6 +1,6 @@
 import os
 from flask import Flask,session, flash, request, render_template, url_for, redirect,send_from_directory
-from models import User, Product, Utrack
+from models import User, Product, Utrack, Delivery
 from database import db_session
 from database import init_db
 from functools import wraps
@@ -159,7 +159,7 @@ def hweight(id):
         uhw=Utrack(uid=user.id, height=request.form['height'], weight=request.form['weight'], datechanged=request.form['date'])
         db_session.add(uhw)
         db_session.commit()
-        return redirect('logout')
+
 
     return render_template('trackuser.html', user=user)
 
@@ -211,24 +211,17 @@ def prof(uid):
 def edit_prof(id):
     user=User.query.filter_by(id=id).one()
     
-    #
+    #update user details
     if request.method=='POST':
         
-        '''
+    
         user.uname= request.form['uname']
         user.phoneNumber=request.form['phoneNumber']
         user.email=request.form['email']
         user.pwd=request.form['pwd']
-        user.dateofBirth=request.form['dateofBirth']
-        user.height=request.form['height']
-        user.weight=request.form['weight']
         user.storedCash=request.form['storedCash']
-        '''
-    
-        #def totrack():
-        #stats=Utrack(rquest.form['height'], request.form['weight'], request.form['dateofBirth'])
-        #db_session.add(stats)
         db_session.commit()
+        
         flash('update successful, login to access page')
         return redirect(url_for('login'))
       
@@ -251,13 +244,28 @@ def gallery():
     return render_template('productview.html', image_names=image_names)
 
 
-app.route('/singleProductView/<string:id>')
+@app.route('/singleProductView/<int:id>', methods=['GET'])
 @is_loggedin
 def foodImage(id):
     #view for a single product
-    image_view=Product.query_by(id=id).one()
+    image_view=Product.query.filter_by(id=id).one()
+    
 
-    return rennder_template('singleProductView.html', image_view=image_view)
+    return render_template('singleProductView.html', image_view=image_view)
+
+@app.route('/delivery/<string:id>', methods=['GET','POST'])
+@is_loggedin
+def delivery(id):
+    prod=Product.query.filter_by(id=id).all()
+    user=User.query.filter_by(id=id).all()
+    
+    if request.method=='POST':
+        udelivery=Delivery(did=user.id, prodnm=prod.productname, deliveryOption=request.form.get['delivery'])
+        db_session.add(udelivery)
+        db_session.commit()
+    render_template('delivery.html')
+
+
 
 
    
@@ -313,7 +321,7 @@ def dashbaord(id):
 
     graph=pygal.Line()
     graph.title='Change in height and weight over time'
-    graph.x_lables= dates
+    graph.x_lables= map(int,dates)
     graph.add('Height over time', heights)
     graph.add('Weight over time', weights)
     graph_data=graph.render_data_uri()
@@ -345,8 +353,29 @@ def stats():
     return render_template('showStats.html',graph_data=graph_data)
 
 
+@app.route('/allStats')
+@is_adminlogin
+def allstats():
+    b=Utrack.query.all()
+    heights, weights,dates=[],[],[]
 
+    for ahw in b:
+        dates.append(ahw.datechanged)
+        heights.append(ahw.height)
+        weights.append(ahw.weight)
+
+    graph=pygal.Bar()
+    graph.title='Height and Weight'
+    graph.x_lables=map(str, '2018') 
+    graph.add('Height', heights)
+    graph.add('Weight', weights)
+    graph_data=graph.render_data_uri()
     
+
+    return render_template('allStats.html',graph_data=graph_data)
+
+
+
 
 
 

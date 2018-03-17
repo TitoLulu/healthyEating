@@ -1,21 +1,7 @@
 {% extends 'layout.html'%}
 
 {% block body%}
-	<style>
-		[title~=img]{
-			border: 2%;
-			width:98%;
-		}
-		[title~=text]{
-			padding-left: 2%;
-			width:98%;
-			color: black;
-		}
-		h{
-			text-decoration: none;
-		}
-	</style>
-	<h1><small>Welcome{{session.username}}</small></h1>
+	<h1><small>Welcome {{session.username}}</small></h1>
 	<div >
 	<hr>
 	
@@ -33,7 +19,7 @@
 						    <a href="/addproduct/{{image_name.id}}">
 						      <h2>US${{image_name.cost}}</h2>
 						    </a>
-						    <a href="singleProductView/{{session.id}}" class="btn btn-primary success"><h6>To Cart</h6>
+						    <a href="singleProductView/{{image_name.id}}" class="btn btn-primary success"><h6>Subscribe</h6>
 						    	
 						    </a>
 						    

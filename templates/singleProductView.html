@@ -1,15 +1,24 @@
 {% extends 'layout.html'%}
 
 {% block body%}
-<div>
+<h1><small>Product Details</small></h1>
+<hr>
+<div class="container" style="float: left; width: 33%;">
 
- {% for image_view in image_view%}
- 	<div cass="well">
+	 	<div cass="well">
 
- 		<a href="{{image_view.productImage}}"></a>
- 		
+	 		<a href="singleProductView/{{image_view.id}}"><h2>{{image_view.productImage}}</h2></a>
+	 		<a href="singleProductView/{{image_view.id}}"><h2>{{image_view.productname}}</h2></a>
+	 		<a href="singleProductView/{{image_view.id}}"><h2>US${{image_view.cost}}</h2></a>
+
+
+	 		
+	 	</div>
+	 	<div>
+	 		<a href="delivery/{{session.id}}" class="btn btn-primary success"><strong>Customize Delivery</strong></a>
+	 	</div>
  	</div>
+ 
 
- {% endfor%}
- </div>
-{%endblock%}
+
+{% endblock %}
