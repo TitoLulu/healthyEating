@@ -277,9 +277,19 @@ def delivery(id):
 @is_loggedin
 def esub(id):
     #directs user to edit subscription.
-    sub=Delivery.query.filter_by(id=session['id']).one()
+    sub=Delivery.query.filter_by(did=session['id']).one()
 
     return render_template('editSubscription.html', sub=sub)
+
+@app.route('/cancelsub/<string:id>')
+@is_loggedin
+def csub(id):
+    #cancel subscription, redirect client to products page
+    deleteSub=Delivery.query.filter_by(did=id).one()
+    db_session.delete(deleteSub)
+    db_session.commit()
+
+    return render_template('productview.html')
 
 
 def allowed_file(filename):
