@@ -1,19 +1,23 @@
-{% extends 'layout.html'%}
+{% extends 'adminlayout.html'%}
 
 {% block body %}
 	<h1> <small>Upcoming Deliveries </small></h1>
 	<hr>
 	<table class="table table-striped">
 		<tr>
+			<th>Client ID</th>
 			<th>Product Name</th>
 			<th>Delivery Option</th>
 			<th></th>
 		</tr>
+		{% for alldeliveries in alldeliveries %}
 		<tr>
+			<td>{{alldeliveries.did}}</td>
 			<td>{{alldeliveries.prodnm}}</td>
 			<td>{{alldeliveries.deliveryOption}}</td>
-			<td><a href="" class="btn btn-success">Cancel</a></td>
+			<td><a href="/cleardelivery" class="btn btn-success">Delivered</a></td>
 		</tr>
+		{% endfor %}
 	</table>
 
 

@@ -256,9 +256,9 @@ def foodImage(id):
 @app.route('/delivery/<string:id>', methods=['GET','POST'])
 @is_loggedin
 def delivery(id):
-    prod=Product.query.filter_by(id=session['id']).all()
+    prod=Product.query.filter_by(id=session['id']).one()
    
-    user=User.query.filter_by(id=session['id']).all()
+    user=User.query.filter_by(id=session['id']).one()
     select=request.form.get('delivery')
     
 
@@ -400,7 +400,18 @@ def updeliveries():
     #check upcoming deliveries
     alldeliveries=Delivery.query.all()
 
+
     return render_template('upcomingdeliveries.html', alldeliveries=alldeliveries)
+
+#admin mark delivery as complete
+@app.route('/cleardelivery/<string:id>', methods=['GET','POST'])
+@is_adminlogin
+def cdelivery(id):
+    cdelivery=Delivery.query.filter_by(id=id).one()
+    db_session.delete(cdelivery)
+    db_session.commit()
+
+    return  redirect(url_for('admindashboard'))
 
 
 
