@@ -3,7 +3,20 @@
 
 {% block body %}
 
-
+	<div class="row" >
+        <div class="col-md-4 col-sm-4 col-sx-4"></div>
+        <div class="col-md-4 col-sm-4 col-sx-4">
+        <form action='/allStats' method="GET"   >
+                <div class="form-group">
+                  <label for="search">search user by id:</label>
+                  <input type="search" class="form-control" id="search" name="search"  >
+                </div>
+                <input type="submit" class="btn btn-primary" value="Search">
+              </form>
+      	<div class="col-md-4 col-sm-4 col-sx-4"></div>
+    </div>
+  
+  <div>
   <div class="container", align="left">
     <embed type="image/svg+xml" src={{graph_data|safe}} 
     style='max-width:1000px'/>
@@ -11,6 +24,8 @@
 
     
   </div>
+  </div>
+
 
 
 

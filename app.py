@@ -8,7 +8,7 @@ from werkzeug.utils import secure_filename
 import pygal
 import os, sys
 import statistics
-#style.use('fivethirtyeight')
+
 
 
 
@@ -22,10 +22,10 @@ ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 app=Flask(__name__)
 
 
-#APP_ROOT = os.path.dirname(os.path.abspath(__file__))
-#UPLOAD_FOLDER = os.path.join(APP_ROOT, 'images')
+
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['WHOOSH_BASE']='whoosh'
 
 
 
@@ -256,9 +256,11 @@ def foodImage(id):
 @app.route('/delivery/<string:id>', methods=['GET','POST'])
 @is_loggedin
 def delivery(id):
-    prod=Product.query.filter_by(id=session['id']).one()
+    prod=Product.query.filter_by(id=id).one()
    
     user=User.query.filter_by(id=session['id']).one()
+    
+
     select=request.form.get('delivery')
     
 
@@ -269,6 +271,7 @@ def delivery(id):
         db_session.commit()
 
     return render_template('delivery.html')
+
 
 
 @app.route('/editSubscription/<string:id>')
@@ -354,6 +357,7 @@ def dashbaord(id):
 @app.route('/showStats')
 @is_adminlogin
 def stats():
+    #shows the mean of heights and weights over time
     b=Utrack.query.all()
     heights, weights,dates=[],[],[]
 
@@ -376,7 +380,9 @@ def stats():
 @app.route('/allStats')
 @is_adminlogin
 def allstats():
-    b=Utrack.query.all()
+    search=request.args.get('search')
+    b=Utrack.query.filter_by(id=search).all()
+
     heights, weights,dates=[],[],[]
 
     for ahw in b:
@@ -393,6 +399,8 @@ def allstats():
     
 
     return render_template('allStats.html',graph_data=graph_data)
+
+
 
 @app.route('/upcomingdeliveries')
 @is_adminlogin
