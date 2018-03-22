@@ -381,7 +381,7 @@ def stats():
 @is_adminlogin
 def allstats():
     search=request.args.get('search')
-    b=Utrack.query.filter_by(id=search).all()
+    b=Utrack.query.filter_by(uid=search).all()
 
     heights, weights,dates=[],[],[]
 
@@ -390,9 +390,9 @@ def allstats():
         heights.append(ahw.height)
         weights.append(ahw.weight)
 
-    graph=pygal.Bar()
+    graph=pygal.Line()
     graph.title='Height and Weight'
-    graph.x_lables=map(str, '2018') 
+    graph.x_lables=dates 
     graph.add('Height', heights)
     graph.add('Weight', weights)
     graph_data=graph.render_data_uri()
