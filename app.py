@@ -13,7 +13,7 @@ import statistics
 
 
 
-UPLOAD_FOLDER = '/static/images'
+UPLOAD_FOLDER = 'static/images'
 
 
 #filetypes allowed
@@ -259,6 +259,15 @@ def gallery():
     image_names=Product.query.all()
   
     return render_template('productview.html', image_names=image_names)
+#home view
+@app.route('/home')
+@is_loggedin
+def hview():
+    error=None
+    
+    image_names=Product.query.all()
+  
+    return render_template('home.html', image_names=image_names)
 
 
 @app.route('/singleProductView/<int:id>', methods=['GET'])

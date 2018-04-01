@@ -1,10 +1,24 @@
 {% extends 'layout.html' %}
 
 {% block body %}
-<div>
-	<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='style.css')}}">
+<h1>Meals Available</h1>
+<hr>
+		<div style="left:1%;">
+				 {% for image_name in image_names %}
+				 
+				 	
+				 	<div class="well" style="float: left; width: 32%;  ">
+				 		<a href="/home/{{image_name.id}}" ><img src='{{image_name.productImage}}' style="width: 100%;"></a>
+						    
+					  </div>
+					  
+					
+				 
 
-</div>
+
+				 {% endfor%}
+		
+	</div>
 	
 
 {% endblock %}
