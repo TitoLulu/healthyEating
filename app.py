@@ -94,7 +94,7 @@ def login():
         else:
             return jsonify({'failure': 'Missing Information!'})
 
-    return render_template('login.html')
+    #return render_template('login.html')
     '''if request.method=='POST':
 
 
