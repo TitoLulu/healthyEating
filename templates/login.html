@@ -3,7 +3,7 @@
     <div class="row" >
         <div class="col-md-4 col-sm-4 col-sx-4"></div>
         <div class="col-md-4 col-sm-4 col-sx-4">
-        <form action='/login' method="POST" id="loginform" onsubmit="return validatelogin()" >
+        <form action='/login' method="POST" name="loginform" >
                 <div class="form-group">
                   <label for="email">Email:</label>
                   <input type="email" class="form-control" id="email" name="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" >
@@ -11,9 +11,12 @@
                 <div class="form-group">
                   <label for="pwd">Password:</label>
                   <input type="text" class="form-control" id="pwd" name="pwd" >
+                  
                 </div>
-                <input type="submit" class="btn btn-primary" value="Submit">
+                <div>
+                <input type="submit" class="btn btn-primary" value="Submit"></div>
               </form>
+            
               </div>
               <div class="col-md-4 col-sm-4 col-sx-4"></div>
       </div>
@@ -26,16 +29,7 @@
     </div>
   </div>
 
-  <script type="text/javascript">
-    function validatelogin(){
-      var email=document.getElementById('email').pattern;
-      var pass=document.getElementById('pwd').value;
-      if(pass=="" && email ==""){
-        alert("Fill all fields")
-        return false;
-      }
-    }
-  </script>
+
 
 {% endblock %}
 

@@ -3,19 +3,19 @@
 {% block body%}
 <h1><small>Product Details</small></h1>
 <hr>
-<div class="container" style="float: left; width: 33%;">
+<div class="container" >
 
-	 	<div cass="well">
+	 	<div cass="well" style="float: left; width: 33%;">
 
-	 		<a href="singleProductView/{{image_view.id}}"><h2>{{image_view.productImage}}</h2></a>
+	 		<a href="singleProductView/{{image_view.id}}"><img src='{{image_view.productImage}}'></a>
 	 		<a href="singleProductView/{{image_view.id}}"><h2>{{image_view.productname}}</h2></a>
 	 		<a href="singleProductView/{{image_view.id}}"><h2>US${{image_view.cost}}</h2></a>
 
-
+	 		<a href="/delivery/{{session.id}}" class="btn btn-primary success"><strong>Customize Delivery</strong></a>
 	 		
 	 	</div>
 	 	<div>
-	 		<a href="../../delivery/{{session.id}}" class="btn btn-primary success"><strong>Customize Delivery</strong></a>
+	 		
 	 	</div>
  	</div>
  

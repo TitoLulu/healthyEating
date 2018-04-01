@@ -1,5 +1,5 @@
 import os
-from flask import Flask,session, flash, request, render_template, url_for, redirect,send_from_directory
+from flask import Flask,session, jsonify,flash, request, render_template, url_for, redirect,send_from_directory
 from models import User, Product, Utrack, Delivery
 from database import db_session
 from database import init_db
@@ -13,7 +13,7 @@ import statistics
 
 
 
-UPLOAD_FOLDER = r'images'
+UPLOAD_FOLDER = '/static/images'
 
 
 #filetypes allowed
@@ -74,12 +74,29 @@ def post_user():
 '''
 login for registered users
 '''
-@app.route('/login',methods=['GET','POST'])
+@app.route('/login',methods=['POST'])
 def login():
-    error=None
+    #error=None
     if request.method=='POST':
         email=request.form['email']
         pwd=request.form['pwd']
+
+        if email and pwd:
+            #email=email
+            #return jsonify({'email': email})
+            user=User.query.filter_by(email=email).one()
+            if user is not None and user.pwd == pwd:
+                session['logged_in']=True
+                session['username']=user.uname
+                session['id']=user.id
+                return render_template('home.html')
+
+        else:
+            return jsonify({'failure': 'Missing Information!'})
+
+    return render_template('login.html')
+    '''if request.method=='POST':
+
 
         user=User.query.filter_by(email=email).one()
         if user is not None and user.pwd == pwd:
@@ -89,10 +106,10 @@ def login():
             return render_template('home.html')
 
         else:
-            flash('invalid login')
+            flask.flash('invalid login')
             return render_template('login.html')
       
-    return render_template('login.html')
+    return render_template('login.html')'''
 
 '''
 admin login
@@ -308,7 +325,7 @@ def addproduct():
              filename = secure_filename(file.filename)
              dbpath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
              file.save(dbpath)
-             post=Product(request.form['pname'], dbpath,request.form['cost'])
+             post=Product(request.form['pname'],dbpath,request.form['cost'])
              db_session.add(post)
              db_session.commit()
              flash('product added Successfully')
