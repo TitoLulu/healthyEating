@@ -8,12 +8,13 @@ from werkzeug.utils import secure_filename
 import pygal
 import os, sys
 import statistics
+import simplejson as json
 
 
 
 
 
-UPLOAD_FOLDER = 'static/images'
+UPLOAD_FOLDER = r'static/images'
 
 
 #filetypes allowed
@@ -76,40 +77,19 @@ login for registered users
 '''
 @app.route('/login',methods=['POST'])
 def login():
-    #error=None
-    if request.method=='POST':
-        email=request.form['email']
-        pwd=request.form['pwd']
-
-        if email and pwd:
-            #email=email
-            #return jsonify({'email': email})
-            user=User.query.filter_by(email=email).one()
-            if user is not None and user.pwd == pwd:
-                session['logged_in']=True
-                session['username']=user.uname
-                session['id']=user.id
-                return render_template('home.html')
-
-        else:
-            return jsonify({'failure': 'Missing Information!'})
-
-    #return render_template('login.html')
-    '''if request.method=='POST':
-
-
+    email=request.form['email']
+    pwd=request.form['pwd']
+    if pwd and email:
         user=User.query.filter_by(email=email).one()
         if user is not None and user.pwd == pwd:
             session['logged_in']=True
             session['username']=user.uname
             session['id']=user.id
             return render_template('home.html')
+        #return json.dumps('all fields required')
+    return render_template('login.html')
 
-        else:
-            flask.flash('invalid login')
-            return render_template('login.html')
-      
-    return render_template('login.html')'''
+
 
 '''
 admin login
@@ -312,7 +292,7 @@ def esub(id):
 @is_loggedin
 def csub(id):
     #cancel subscription, redirect client to products page
-    deleteSub=Delivery.query.filter_by(did=id).one()
+    deleteSub=Delivery.query.filter_by(did=id).first()
     db_session.delete(deleteSub)
     db_session.commit()
 
