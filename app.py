@@ -137,10 +137,11 @@ def is_adminlogin(f):
     return wrap
 #user sessiom
 @app.route('/logout')
-@is_loggedin
+#@is_loggedin
 def logout():
     session.clear()
-    return redirect(url_for('login'))
+    return render_template('login.html')
+    
 #admin session
 @app.route('/adminlogout')
 @is_adminlogin
@@ -264,7 +265,7 @@ def foodImage(id):
 def delivery(id):
     prod=Product.query.filter_by(id=id).one()
    
-    user=User.query.filter_by(id=session['id']).one()
+    #user=User.query.filter_by(id=session['id']).one()
     
 
     select=request.form.get('delivery')
@@ -272,7 +273,7 @@ def delivery(id):
 
     
     if request.method=='POST':
-        udelivery=Delivery(user.id, prod.productname, select)
+        udelivery=Delivery(prod.id, prod.productname, select)
         db_session.add(udelivery)
         db_session.commit()
 
