@@ -50,7 +50,7 @@ direct user to login page
 '''
 @app.route('/')
 def index():
-    return render_template('home.html')
+    return render_template('index.html')
     
 '''
 about the company
@@ -88,6 +88,7 @@ def login():
                 session['username']=user.uname
                 session['id']=user.id
                 return render_template('home.html')
+            
             else:
                 error="Invalid email and password"
                 return render_template('login.html')
@@ -145,7 +146,7 @@ def is_adminlogin(f):
 #@is_loggedin
 def logout():
     session.clear()
-    return render_template('home.html')
+    return render_template('index.html')
     
 #admin session
 @app.route('/adminlogout')
@@ -247,9 +248,9 @@ def gallery():
     return render_template('productview.html', image_names=image_names)
 #home view
 @app.route('/home')
-#@is_loggedin
+@is_loggedin
 def hview():
-    error=None
+    
     
     image_names=Product.query.all()
   
