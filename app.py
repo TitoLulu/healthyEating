@@ -270,6 +270,7 @@ def foodImage(id):
 @is_loggedin
 def delivery(id):
     prod=Product.query.filter_by(id=id).one()
+
    
     user=User.query.filter_by(id=session['id']).one()
     
@@ -283,7 +284,7 @@ def delivery(id):
         db_session.add(udelivery)
         db_session.commit()
 
-    return render_template('delivery.html')
+    return render_template('delivery.html', prod=prod)
 
 
 
@@ -428,9 +429,20 @@ def updeliveries():
 @app.route('/cleardelivery/<string:id>', methods=['GET','POST'])
 @is_adminlogin
 def cdelivery(id):
-    cdelivery=Delivery.query.filter_by(id=id).one()
-    db_session.delete(cdelivery)
-    db_session.commit()
+    error=""
+    #mark delivery as done, deduct from user wallet
+    user=User.query.filter_by(id=id).one()
+    prod=Product.query.filter_by(id=id).one()
+    cdelivery=Delivery.query.filter_by(did=id).first()
+    if user.id==cdelivery.id and user.storedCash >= prod.cost:
+        user.storedCash-=prod.cost
+        db_session.delete(cdelivery)
+        db_session.commit()
+        
+        
+    else:
+        error="User has no enough cash in wallet"
+        return  redirect(url_for('admindashboard'))
 
     return  redirect(url_for('admindashboard'))
 
