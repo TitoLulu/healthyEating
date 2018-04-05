@@ -50,7 +50,7 @@ direct user to login page
 '''
 @app.route('/')
 def index():
-    return render_template('login.html')
+    return render_template('home.html')
     
 '''
 about the company
@@ -75,18 +75,23 @@ def post_user():
 '''
 login for registered users
 '''
-@app.route('/login',methods=['POST'])
+@app.route('/login',methods=['GET','POST'])
 def login():
-    email=request.form['email']
-    pwd=request.form['pwd']
-    if pwd and email:
-        user=User.query.filter_by(email=email).one()
-        if user is not None and user.pwd == pwd:
-            session['logged_in']=True
-            session['username']=user.uname
-            session['id']=user.id
-            return render_template('home.html')
-        #return json.dumps('all fields required')
+    if request.method == 'POST':
+        error = ""
+        email=request.form['email']
+        pwd=request.form['pwd']
+        if pwd and email:
+            user=User.query.filter_by(email=email).one()
+            if user is not None and user.pwd == pwd:
+                session['logged_in']=True
+                session['username']=user.uname
+                session['id']=user.id
+                return render_template('home.html')
+            else:
+                error="Invalid email and password"
+                return render_template('login.html')
+
     return render_template('login.html')
 
 
@@ -140,7 +145,7 @@ def is_adminlogin(f):
 #@is_loggedin
 def logout():
     session.clear()
-    return render_template('login.html')
+    return render_template('home.html')
     
 #admin session
 @app.route('/adminlogout')
@@ -220,8 +225,8 @@ def edit_prof(id):
         user.storedCash=request.form['storedCash']
         db_session.commit()
         
-        flash('update successful, login to access page')
-        return redirect(url_for('login'))
+        #flash('update successful, login to access page')
+        return redirect(url_for('logout'))
       
     return render_template('changeprofdtls.html',  user=user)
 
@@ -242,7 +247,7 @@ def gallery():
     return render_template('productview.html', image_names=image_names)
 #home view
 @app.route('/home')
-@is_loggedin
+#@is_loggedin
 def hview():
     error=None
     
