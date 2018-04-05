@@ -217,12 +217,12 @@ def edit_prof(id):
     #update user details
     if request.method=='POST':
         
-    
+        cash=int(request.form['storedCash'])
         user.uname= request.form['uname']
         user.phoneNumber=request.form['phoneNumber']
         user.email=request.form['email']
         user.pwd=request.form['pwd']
-        user.storedCash=request.form['storedCash']
+        user.storedCash+=cash
         db_session.commit()
         
         #flash('update successful, login to access page')
