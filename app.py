@@ -270,7 +270,7 @@ def foodImage(id):
 def delivery(id):
     prod=Product.query.filter_by(id=id).one()
    
-    #user=User.query.filter_by(id=session['id']).one()
+    user=User.query.filter_by(id=session['id']).one()
     
 
     select=request.form.get('delivery')
@@ -278,7 +278,7 @@ def delivery(id):
 
     
     if request.method=='POST':
-        udelivery=Delivery(prod.id, prod.productname, select)
+        udelivery=Delivery(user.id, prod.productname, select)
         db_session.add(udelivery)
         db_session.commit()
 

@@ -15,7 +15,7 @@ class User(Base):
     dateofBirth = Column(String(120))
     storedCash=Column(Integer())
     usersid = relationship("Utrack",  backref="users")
-    #udid=relationship("Delivery", backref="deliveries")
+    udid=relationship("Delivery", backref="deliveries")
 
     
     
@@ -62,7 +62,7 @@ class Product(Base):
     productname = Column(String(50))
     productImage = Column(String, unique=True)
     cost = Column(Integer())
-    #dprodnm=relationship("Delivery", backref="products")
+    dprodnm=relationship("Delivery", backref="products")
 
 
     def __init__(self, productname=None, productImage=None,cost=None):
@@ -76,13 +76,11 @@ class Product(Base):
 class Delivery(Base):
     __tablename__='deliveries'
     id=Column(Integer, primary_key=True)
-    did=Column(Integer, ForeignKey('products.id'))
+    did=Column(Integer, ForeignKey('users.id'))
     prodnm=Column(String, ForeignKey('products.productname'))
     deliveryOption=Column(String(120))
 
 
-    dprodnm=relationship("Product",foreign_keys=[prodnm])
-    dpr=relationship("Product",foreign_keys=[did])
 
     def __init__(self, did=None, prodnm=None,deliveryOption=None):
         self.did=did
