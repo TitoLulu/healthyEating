@@ -1,5 +1,34 @@
 {% extends 'adminlayout.html' %}
 
 {% block body %}
-  Home
+	<style type="text/css">
+		#cando{
+			margin-left: 28%;
+		}
+		li{
+			margin-top: 10px;
+		}
+		#cando ul li{
+			list-style-type: none;
+			letter-spacing: 3px;
+			
+		}
+		
+	</style>
+
+  <h3>Welcome to Administrator Site</h3>
+  <hr>
+  <div class="alert alert-info" role="alert">
+  <h4>Here are a few things you can do</h4>
+  </div>
+  <div id="cando">
+  	<ul> 
+	  	<li>Add new products</li>
+	  	<li>See the details of all users plus</li>
+	  	<li>Check upcoming deliveries and clear them</li>
+	  	<li>Track clients development over time</li>
+  	</ul>
+
+  </div>
+  
 {% endblock %}

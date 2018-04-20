@@ -1,27 +1,33 @@
 <!DOCTYPE html>
-<html>
-<head>
 <title>Healthy Living</title>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='style.css')}}">
-</head>
-<body>
+
+
 	{% include 'include/_nav.html' %}
+	
+	{% with messages = get_flashed_messages() %}
+		{% if messages %}
+				
+				{% for message in messages %}
+					<div class="alert alert-success" role="alert">
+				    <strong>{{ message }}</strong>
+				    </div>
+				{% endfor %}
+			
+		{% endif %}
+	{% endwith %}
+
 	<div class="container">
 		{% block body %}
-			{% with messages = get_flashed_messages() %}
-			  {% if messages %}
-			    <ul class=flashes>
-			    {% for message in messages %}
-			      <li>{{ message }}</li>
-			    {% endfor %}
-			    </ul>
-			  {% endif %}
-		   {% endwith %}
+		
+
 		{% endblock %}
 
-	</div>
-
+	</di>
+	
+	
+	
 	    <!-- jQuery first, then Tether, then Bootstrap JS. -->
     <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
@@ -29,5 +35,3 @@
      
     <script type="text/javaScript" src="{{url_for('static', filename='validate.js')}}"></script>
 
-</body>
-</html>

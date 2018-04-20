@@ -8,7 +8,7 @@ from werkzeug.utils import secure_filename
 import pygal
 import os, sys
 import statistics
-import simplejson as json
+import datetime
 
 
 
@@ -51,6 +51,7 @@ direct user to login page
 @app.route('/')
 def index():
     return render_template('index.html')
+    #return redirect(url_for('hview'))
     
 '''
 about the company
@@ -77,23 +78,25 @@ login for registered users
 '''
 @app.route('/login',methods=['GET','POST'])
 def login():
+    error = None
     if request.method == 'POST':
-        error = ""
         email=request.form['email']
         pwd=request.form['pwd']
         if pwd and email:
-            user=User.query.filter_by(email=email).one()
+            user=User.query.filter_by(email=email).first()
             if user is not None and user.pwd == pwd:
                 session['logged_in']=True
                 session['username']=user.uname
                 session['id']=user.id
-                return render_template('home.html')
+                flash('You were successfuly logged in')
+                return redirect(url_for('hview'))
+
             
             else:
-                error="Invalid email and password"
-                return render_template('login.html')
+                error='Invalid Credentials'
 
-    return render_template('login.html')
+    return render_template('login.html', error=error)
+    
 
 
 
@@ -103,24 +106,23 @@ admin login
 @app.route('/admin',methods=['GET','POST'])
 def admin():
     error=None
+    mail='admin@growfit.com'
+    password='mahigrowfit'
     if request.method=='POST':
         email=request.form['email']
         pwd=request.form['pwd']
-
-        user=User.query.filter_by(email=email).one()
-        if user is None and user.pwd !=pwd:
-            flash('not valid admin')
-            return render_template('admin.html')
-    
-        else:
-            username=user.uname
+        if mail==email and password==pwd:
+            username='admin'
             session['logged_in']=True
             session['username']=username
             flash('login successful')
             return redirect(url_for('admindashboard'))
+                
         
-      
-    return render_template('admin.html')
+        else:
+            error='not valid admin'
+
+    return render_template('admin.html', error=error)
 
 #check login status
 
@@ -160,6 +162,7 @@ def adminogout():
 def hweight(id):
     user=User.query.filter_by(id=id).one()
     if request.method=='POST':
+        datechanged=datetime.date.today()
         uhw=Utrack(uid=user.id, height=request.form['height'], weight=request.form['weight'], datechanged=request.form['date'])
         db_session.add(uhw)
         db_session.commit()
@@ -347,7 +350,6 @@ def dashbaord(id):
  
     grph= User.query.filter_by(id=id).one()
     u=Utrack.query.filter_by(uid=id).all()
-    print(u)
 
     heights, weights, dates = [], [], []
     
@@ -429,21 +431,21 @@ def updeliveries():
 @app.route('/cleardelivery/<string:id>', methods=['GET','POST'])
 @is_adminlogin
 def cdelivery(id):
-    error=""
     #mark delivery as done, deduct from user wallet
-    user=User.query.filter_by(id=id).one()
-    prod=Product.query.filter_by(id=id).one()
+    
     cdelivery=Delivery.query.filter_by(did=id).first()
-    if user.id==cdelivery.id and user.storedCash >= prod.cost:
-        user.storedCash-=prod.cost
+   
+    user=User.query.filter_by(id=id).first()
+    prod=Product.query.filter_by(id=id).first()
+    cash=user.storedCash
+    prodcash=prod.cost
+    if(cash>=prodcash):
         db_session.delete(cdelivery)
+        user.storedCash-=prodcash
         db_session.commit()
-        
-        
-    else:
-        error="User has no enough cash in wallet"
-        return  redirect(url_for('admindashboard'))
 
+    else:
+        message="Not enough cash delivery not approved!"
     return  redirect(url_for('admindashboard'))
 
 
